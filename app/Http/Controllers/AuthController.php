@@ -56,6 +56,7 @@ class AuthController extends Controller
             return response()->json([
             'access_token' => $token,
             'user' => $user,
+            'message' => 'Enregistrement effectué avec succès',
 
             ], 200);
         } catch (\Exception $exception) {
@@ -92,7 +93,7 @@ class AuthController extends Controller
             //code...
             if (!auth()->attempt($credentials)) {
                 return response()->json([
-                    'error' => 'Invalid credentials',
+                    'error' => 'Identifiants incorrects',
                 ], 403);
             }
 
@@ -100,11 +101,18 @@ class AuthController extends Controller
             $user = User::where('email', $request->email)->firstOrFail();
             $token = $user->createToken('auth_token')->plainTextToken;
 
+            // return response()->json([
+            //     'access_token' => $token,
+            //     'user' => $user,
+
+            // ], 200);
+
             return response()->json([
                 'access_token' => $token,
                 'user' => $user,
-
+                'message' => 'Connexion réussie.',
             ], 200);
+
 
         } catch (\Exception $exception) {
 
@@ -114,12 +122,13 @@ class AuthController extends Controller
         }
     }
 
+    // logout
     public function logout(Request $request)
     {
         $request->user()->currentAccesstoken()->delete();
 
         return response()->json([
-            'message' => 'user has been logged out successfully',
+            'message' => 'Déconnexion réussie',
 
         ], 200);
     }
